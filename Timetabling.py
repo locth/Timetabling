@@ -74,14 +74,24 @@ def loadClassList(classListFile):
     
     return classList
 
+def putClassToTimetable(inputClass, timetable, day, lesson, room, roomList, classList):
+    index = roomList.index(next(x for x in roomList if x.roomName == room))
+    beginLesson = index * 10 + int(lesson[0])
+    endLesson = beginLesson + len(lesson)
+    for i in range(beginLesson, endLesson+1):
+        timetable[day][i] = inputClass
+
+    print("Class: " + inputClass)
+    print("Room: " + room)
+    print("Index in list: " + str(index))
+    print("Begin lesson: " + str(beginLesson))
+    print("End lesson: " + str(endLesson))
+    print(timetable)
 
 roomList = loadRoomList("RoomList.xlsx")
 classList = loadClassList("Input.xlsx")
 
-# d = {room.roomName:[0]*10 for room in roomList}
-# df = pd.DataFrame(data=d)
-
 d = {day:[0]*len(roomList)*10 for day in list(range(2,8,1))}
-df = pd.DataFrame(data=d)
+timetable = pd.DataFrame(data=d, index=list(range(1,len(roomList)*10+1)))
 
-print(df)
+putClassToTimetable("IT007.L11", timetable, 2, "12345", "A205", roomList, classList)
