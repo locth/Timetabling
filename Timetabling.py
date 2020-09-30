@@ -91,7 +91,7 @@ def putClassToTimetable(inputClass, timetable, day, lesson, room, roomList, clas
 roomList = loadRoomList("RoomList.xlsx")
 classList = loadClassList("Input.xlsx")
 
-d = {day:[0]*len(roomList)*10 for day in list(range(2,8,1))}
+d = {day:[0]*len(roomList)*10 for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']}
 timetable = pd.DataFrame(data=d, index=list(range(1,len(roomList)*10+1)))
 
-putClassToTimetable("IT007.L11", timetable, 2, "12345", "A205", roomList, classList)
+putClassToTimetable("IT007.L11", timetable, 'Monday', "12345", "A205", roomList, classList)
