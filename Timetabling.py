@@ -1,8 +1,14 @@
-import os
 import pandas as pd
 from math import ceil
 
-SKIP = ['PE001', 'CS5030', 'CS5000']
+SKIP = ['PE001', 'CS5030', 'CS5000', 'CE201', 'CE206',
+'CS505', 'EC212', 'EC401', 'IE505', 'IS212',
+'IS401', 'NT114', 'NT115', 'NT117', 'NT505',
+'PE002', 'SE112', 'SE121', 'SE501', 'SE505']
+
+INPUT = "Input_HK_1_NH_2020.xlsx"
+OUTPUT = "Output_HK_1_NH_2020.xlsx"
+OUTPUT_TIMETABLE = "Output_Timetable_HK_1_NH_2020.xlsx"
 
 # Create class Room
 class Room:
@@ -99,7 +105,7 @@ def exportClassList(classList, classListFile):
         sortedData['lesson'][i] = classList[i].lesson
         sortedData['classRoom'][i] = classList[i].classRoom
 
-    sortedData.to_excel("Output.xlsx")
+    sortedData.to_excel(OUTPUT)
 
 def putClassToTimetable(inputClass, timetable, roomList, classList):
     index = roomList.index(next(x for x in roomList if x.roomName == inputClass.classRoom))
@@ -150,8 +156,19 @@ def init(roomList, classList):
     
     return roomList, classList, timetable
 
+def test(classList):
+    missing = 0
+    for eachClass in classList:
+        if eachClass.subjectID in SKIP:
+            continue
+        if eachClass.day == "" or eachClass.lesson == "" or eachClass.classRoom == "":
+            missing += 1
+            print("Missing class: " + eachClass.classID)
+    if missing == 0:
+        print("=====\nALL CLASSES HAVE BEEN SET SUCCESSFULLY!\n=====")
+
 def main():
-    roomList, classList, timetable = init("RoomList.xlsx", "Input.xlsx")
+    roomList, classList, timetable = init("RoomList.xlsx", INPUT)
     previousDay = "Sunday"
 
     for eachClass in classList:
@@ -176,9 +193,11 @@ def main():
 
     timetable = timetable.set_index("roomName", append=True).swaplevel(0, 1)
 
-    timetable.to_excel("Output_Timetable.xlsx")
+    timetable.to_excel(OUTPUT_TIMETABLE)
 
-    exportClassList(classList, "Input.xlsx")
+    exportClassList(classList, INPUT)
+
+    test(classList)
 
 if __name__ == "__main__":
     main()
