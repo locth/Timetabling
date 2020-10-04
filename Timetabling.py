@@ -156,7 +156,7 @@ def init(roomList, classList):
     
     return roomList, classList, timetable
 
-def test(classList):
+def testAllocate(classList):
     missing = 0
     for eachClass in classList:
         if eachClass.subjectID in SKIP:
@@ -166,6 +166,18 @@ def test(classList):
             print("Missing class: " + eachClass.classID)
     if missing == 0:
         print("=====\nALL CLASSES HAVE BEEN SET SUCCESSFULLY!\n=====")
+
+def testOverlap(classList):
+    overlap = 0
+    for i in range(len(classList)):
+        if classList[i].subjectID in SKIP:
+            continue
+        for j in range(i+1, len(classList)-1):
+            if classList[i].day == classList[j].day and classList[i].lesson == classList[j].lesson and classList[i].classRoom == classList[j].classRoom:
+                print("Class " + classList[i].classID + " is overlap with Class " + classList[j].classID)
+                overlap += 1
+    if overlap == 0:
+        print("=====\nNO CLASS OVERLAP!\n=====")
 
 def main():
     roomList, classList, timetable = init("RoomList.xlsx", INPUT)
@@ -197,7 +209,8 @@ def main():
 
     exportClassList(classList, INPUT)
 
-    test(classList)
+    testAllocate(classList)
+    testOverlap(classList)
 
 if __name__ == "__main__":
     main()
