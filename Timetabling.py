@@ -135,39 +135,11 @@ def findRoom(roomList, timetable, classID, roomType, classCapacity, classCredits
     # If no available free slot found, return ERROR
     return ValueError
 
-def findTHRoom(roomList, timetable, classID, roomType, classCapacity, classCredits, previousDay):
-    # Check each room in room list
-    for room in roomList:
-        # Check room based on class condition
-        if room.roomType == roomType and room.roomCapcity >= classCapacity:
-            # Check each day in a week
-            for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']:
-                """ CONDITION: classes of same student year are not in the same day """
-                if day == previousDay:
-                    continue
-                # Find free slot
-                freeSlot = [i for i, x in enumerate(room.slot[day]) if x == 0]
-                # For each free slot, check availabity of free period
-                for slot in freeSlot:
-                    # The free period must between lesson 1 -> 5 and lesson 6 -> 10
-                    if (slot <= 4 - classCredits) or (4 < slot and slot <= 9 - classCredits):
-                        # If begining slot and endding slot are free, ALL slots between them are free
-                        if room.slot[day][slot + classCredits] == 0:
-                            lesson = ""
-                            # Generate available lesson from free slot
-                            for i in range(slot + 1, slot + classCredits + 1):
-                                room.slot[day][i - 1] = classID
-                                lesson += str(i)
-                            return room.roomName, day, lesson
-    # If no available free slot found, return ERROR
-    return ValueError
-
-def init(roomList, classList, THClassList):
+def init(roomList, classList):
     # Import room list
     roomList = loadRoomList(roomList)
     # Import class list
     classList = loadClassList(classList)
-    THClassList = loadClassList(THClassList)
     # Init empty timetable
     d = {day:[0]*len(roomList)*10 for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']}
     timetable = pd.DataFrame(data=d, index=list(range(1,len(roomList)*10+1)))
@@ -176,10 +148,10 @@ def init(roomList, classList, THClassList):
         timetable['roomName'][i] = roomList[ceil(i/10) - 1].roomName
     timetable['roomName'][1160] = roomList[-1].roomName
     
-    return roomList, classList, THClassList, timetable
+    return roomList, classList, timetable
 
 def main():
-    roomList, classList, THClassList, timetable = init("RoomList.xlsx", "Input.xlsx", "InputTH.xlsx")
+    roomList, classList, timetable = init("RoomList.xlsx", "Input.xlsx")
     previousDay = "Sunday"
 
     for eachClass in classList:
