@@ -64,7 +64,6 @@ def loadClassList(classListFile):
     for i in data.index:
         data['classPerSubject'][i] = len(data[data.subjectID == data['subjectID'][i]])
     sortedData = data.sort_values(by=['studentYear','classPerSubject', 'classCredits', 'classID'], ascending=[True, False, False, True], ignore_index=True)
-    print(sortedData)
     classList = []
 
     for i in sortedData.index:
@@ -98,13 +97,12 @@ def exportClassList(classList, classListFile):
     
     for i in data.index:
         data['classPerSubject'][i] = len(data[data.subjectID == data['subjectID'][i]])
-    sortedData = data.sort_values(by=['studentYear','classPerSubject', 'classCredits', 'classID'], ascending=['true', 'false', 'false', 'true'], ignore_index=True)
+    sortedData = data.sort_values(by=['studentYear','classPerSubject', 'classCredits', 'classID'], ascending=[True, False, False, True], ignore_index=True)
     
     for i in sortedData.index:
-        sortedData['day'][i] = classList[i].day
-        sortedData['lesson'][i] = classList[i].lesson
-        sortedData['classRoom'][i] = classList[i].classRoom
-
+        sortedData['day'][i] = classList[i-1].day
+        sortedData['lesson'][i] = classList[i-1].lesson
+        sortedData['classRoom'][i] = classList[i-1].classRoom
     sortedData.to_excel(OUTPUT)
 
 def putClassToTimetable(inputClass, timetable, roomList, classList):
